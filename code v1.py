@@ -13,7 +13,7 @@ from html.parser import HTMLParser
 # ==========================================
 # CONFIGURATION ET SETUP
 # ==========================================
-GROK_API_KEY = "xai-Eo4B9Ek1ykKNetazhpWbmW66TB2TEZhAlBbcEoBGN0HJhXKomtmE1QOvch0B23TRDNMFQuENvUntbVGk"
+GROK_API_KEY = os.environ.get("GROK_API_KEY")
 FICHIER_ENTREE = "Exemple Scrap KP (1).xlsx"
 DOSSIER_SORTIE = "Resultats_Extraction"
 
@@ -215,10 +215,11 @@ def executer_pipeline(limite=2):
     resultats_finaux = []
     
     co = ChromiumOptions().auto_port()
+    co.headless() # INDISPENSABLE SUR LE CLOUD
+    co.set_argument('--no-sandbox') # Nécessaire pour les serveurs Linux
     co.set_argument('--start-maximized')
     co.set_argument('--disable-blink-features=AutomationControlled')
-    navigateur = ChromiumPage(co)
-
+    
     for url in liens_a_traiter:
         # 1. Récupération des données brutes
         donnees = extraction_scraping(url, navigateur)
