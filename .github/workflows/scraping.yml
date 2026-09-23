@@ -1,0 +1,36 @@
+name: Lancer le Scraper Kompass
+
+on:
+  workflow_dispatch: # Permet de lancer le script manuellement depuis GitHub
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest # Utilise un serveur Linux sur le cloud
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v3
+
+      - name: Installer Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Installer Google Chrome (Requis pour DrissionPage)
+        run: |
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo apt install ./google-chrome-stable_current_amd64.deb
+
+      - name: Installer les dépendances Python
+        run: pip install -r requirements.txt
+
+      - name: Lancer le script de Scraping
+        env:
+          GROK_API_KEY: ${{ secrets.GROK_API_KEY }}
+        run: python "code v1.py"
+
+      - name: Sauvegarder les résultats Excel
+        uses: actions/upload-artifact@v4
+        with:
+          name: Resultats_Scraping
+          path: Resultats_Extraction/*.xlsx
