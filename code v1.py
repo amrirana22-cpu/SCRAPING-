@@ -214,11 +214,14 @@ def executer_pipeline(limite=2):
     liens_a_traiter = df_entree.iloc[:, 0].dropna().head(limite).tolist()
     resultats_finaux = []
     
-    co = ChromiumOptions().auto_port()
+   co = ChromiumOptions().auto_port()
     co.headless() # INDISPENSABLE SUR LE CLOUD
     co.set_argument('--no-sandbox') # Nécessaire pour les serveurs Linux
     co.set_argument('--start-maximized')
     co.set_argument('--disable-blink-features=AutomationControlled')
+    
+    # LIGNE MANQUANTE À AJOUTER :
+    navigateur = ChromiumPage(co)
     
     for url in liens_a_traiter:
         # 1. Récupération des données brutes
